@@ -12,7 +12,7 @@ void yyerror(const char *s);
 %left '*' '/'
 
 %%
-
+'
 /* O programa agora é uma lista de comandos */
 program: command_list
        ;
@@ -21,8 +21,8 @@ command_list: command_list command
             | command
             ;
 
-command: ID '=' expr EOL        { /* Lógica de atribuição */ }
-       | PRINT '(' printable ')' EOL { /* Lógica de impressão */ }
+command: ID '=' printable EOL   { /* Lógica de atribuição */ }
+       | PRINT '(' printable ')' EOL {/* Lógica de impressão */ }
        | EOL                    { /* Linha vazia */ }
        ;
 
@@ -37,16 +37,12 @@ expr: expr '+' expr
     | '(' expr ')'
     | NUM
     | ID
-    | LENGTH '(' STRING ')'
+    | LENGTH '(' printable ')'
     | CONCAT '(' string_list ')'
     ;
 
-string_list: string_list ',' STRING
-           | STRING
+string_list: string_list ',' printable
+           | printable
            ;
 
 %%
-
-void yyerror(const char *s) {
-    printf("erro sintatico\n");
-}
