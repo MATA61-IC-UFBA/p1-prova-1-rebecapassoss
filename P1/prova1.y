@@ -8,11 +8,12 @@ void yyerror(const char *s);
 %token PRINT CONCAT LENGTH
 %token EOL ERROR
 
+
 %left '+' '-'
 %left '*' '/'
 
 %%
-'
+
 /* O programa agora é uma lista de comandos */
 program: command_list
        ;
@@ -22,8 +23,12 @@ command_list: command_list command
             ;
 
 command: ID '=' printable EOL   { /* Lógica de atribuição */ }
-       | PRINT '(' printable ')' EOL {/* Lógica de impressão */ }
-       | EOL                    { /* Linha vazia */ }
+       | ID '=' printable
+       | PRINT '(' printable ')' EOL {/* Lógica de impressão }
+       | PRINT '(' printable ')'
+       | printable EOL
+       | printable
+       | EOL { /* Linha vazia */ }
        ;
 
 printable: expr
