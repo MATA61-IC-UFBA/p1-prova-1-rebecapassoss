@@ -1,19 +1,25 @@
 %{
 #include "prova1.tab.h"
-#include <stdlib.h>
-#include <string.h>
-
-void yyerror(const char *msg);
-int yylex();
 %}
 
-%option noyywrap
+%option noyywrap yylineno
 
 %%
 
-/* copiar E2 e fazer as extensões */
+"\\".* { /* Comentário: ignora */ }
+[ \t\r]+        { /* Espaços: ignora */ }
 
+"print"         { return PRINT; }
+"concat"        { return CONCAT; }
+"length"        { return LENGTH; }
 
-.            { return ERROR; }
+[a-zA-Z][a-zA-Z0-9]* { return ID; }
+[0-9]+          { return NUM; }
+\"[^\"\n]*\"    { return STRING; }
+
+"+" | "-" | "*" | "/" | "(" | ")" | "=" | "," { return yytext[0]; }
+"\n"            { return EOL; }
+
+.               { return ERROR; }
 
 %%

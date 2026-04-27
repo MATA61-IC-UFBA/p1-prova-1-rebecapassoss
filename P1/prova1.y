@@ -1,38 +1,52 @@
 %{
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 extern int yylex();
-extern int yyparse();
-void yyerror(const char *msg);
-
+void yyerror(const char *s);
 %}
 
-%token ERROR
+%token NUM ID STRING
+%token PRINT CONCAT LENGTH
+%token EOL ERROR
 
-%start program
-
-%%
-
-/* programa */
-program
-: stmt_list 
-;
-
-stmt_list
-: stmt
-| stmt_list stmt
-;
-
-stmt
-: IDENT ASSIGN expr
-| PRINT LPAREN exprlist RPAREN
-| expr
-;
-
-expr
-/* completar */
+%left '+' '-'
+%left '*' '/'
 
 %%
 
+/* O programa agora é uma lista de comandos */
+program: command_list
+       ;
+
+command_list: command_list command
+            | command
+            ;
+
+command: ID '=' expr EOL        { /* Lógica de atribuição */ }
+       | PRINT '(' printable ')' EOL { /* Lógica de impressão */ }
+       | EOL                    { /* Linha vazia */ }
+       ;
+
+printable: expr
+         | STRING
+         ;
+
+expr: expr '+' expr
+    | expr '-' expr
+    | expr '*' expr
+    | expr '/' expr
+    | '(' expr ')'
+    | NUM
+    | ID
+    | LENGTH '(' STRING ')'
+    | CONCAT '(' string_list ')'
+    ;
+
+string_list: string_list ',' STRING
+           | STRING
+           ;
+
+%%
+
+void yyerror(const char *s) {
+    printf("erro sintatico\n");
+}
